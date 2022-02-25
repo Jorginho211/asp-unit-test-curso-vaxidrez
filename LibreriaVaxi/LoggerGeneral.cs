@@ -12,6 +12,7 @@ namespace LibreriaVaxi
         bool LogDatabase(string message);
         bool LogBalanceDespuesRetiro(int balanceDespuesRetiro);
         string MessageConReturnStr(string message);
+        bool MessageConOutParametroReturnBoolean(string str, out string outputStr);
     }
 
     public class LoggerGeneral : ILoggerGeneral
@@ -39,6 +40,12 @@ namespace LibreriaVaxi
             Console.WriteLine(message);
         }
 
+        public bool MessageConOutParametroReturnBoolean(string str, out string outputStr)
+        {
+            outputStr = "Hola" + str;
+            return true;
+        }
+
         public string MessageConReturnStr(string message)
         {
             Console.WriteLine(message);
@@ -60,6 +67,12 @@ namespace LibreriaVaxi
 
         public void Message(string message)
         {
+        }
+
+        public bool MessageConOutParametroReturnBoolean(string str, out string outputStr)
+        {
+            outputStr = string.Empty;
+            return false;
         }
 
         public string MessageConReturnStr(string message)
