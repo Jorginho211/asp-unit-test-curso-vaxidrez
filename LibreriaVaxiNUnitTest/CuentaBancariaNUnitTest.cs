@@ -60,5 +60,17 @@ namespace LibreriaVaxi
             var resultado = cuentaBancaria.Retiro(retiro);
             Assert.IsFalse(resultado);
         }
+
+        [Test]
+        public void CuentaBancariaLoggerGeneral_LogMocking_ReturnTrue()
+        {
+            var loggerGeneralMock = new Mock<ILoggerGeneral>();
+            string textoPrueba = "hola mundo";
+            loggerGeneralMock.Setup(u => u.MessageConReturnStr(It.IsAny<string>())).Returns<string>(str => str.ToLower());
+
+            var resultado = loggerGeneralMock.Object.MessageConReturnStr("hoLA MUndo");
+
+            Assert.That(resultado, Is.EqualTo(textoPrueba));
+        }
     }
 }

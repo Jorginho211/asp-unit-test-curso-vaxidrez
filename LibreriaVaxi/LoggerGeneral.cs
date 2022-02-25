@@ -11,6 +11,7 @@ namespace LibreriaVaxi
         void Message(string message);
         bool LogDatabase(string message);
         bool LogBalanceDespuesRetiro(int balanceDespuesRetiro);
+        string MessageConReturnStr(string message);
     }
 
     public class LoggerGeneral : ILoggerGeneral
@@ -37,6 +38,12 @@ namespace LibreriaVaxi
         {
             Console.WriteLine(message);
         }
+
+        public string MessageConReturnStr(string message)
+        {
+            Console.WriteLine(message);
+            return message.ToLower();
+        }
     }
 
     public class LoggerFake : ILoggerGeneral
@@ -53,6 +60,11 @@ namespace LibreriaVaxi
 
         public void Message(string message)
         {
+        }
+
+        public string MessageConReturnStr(string message)
+        {
+            return message;
         }
     }
 }
