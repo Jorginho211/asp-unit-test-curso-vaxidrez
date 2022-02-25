@@ -30,5 +30,35 @@ namespace LibreriaVaxi
             Assert.IsTrue(resultado);
             Assert.That(cuentaBancaria.GetBalance(), Is.EqualTo(100));
         }
+
+        [Test]
+        [TestCase(200, 100)]
+        [TestCase(200, 150)]
+        public void Retiro_RetiroInferiorBalance_ReturnsTrue(int balance, int retiro)
+        {
+            var loggerMock = new Mock<ILoggerGeneral>();
+            loggerMock.Setup(u => u.LogDatabase(It.IsAny<string>())).Returns(true);
+            loggerMock.Setup(u => u.LogBalanceDespuesRetiro(It.Is<int>(x => x>0))).Returns(true);
+
+            CuentaBancaria cuentaBancaria = new(loggerMock.Object);
+            cuentaBancaria.Deposito(balance);
+
+            var resultado = cuentaBancaria.Retiro(retiro);
+            Assert.IsTrue(resultado);
+        }
+
+        [Test]
+        [TestCase(200, 300)]
+        public void Retiro_RetiroSuperiorBalance_ReturnsFalse(int balance, int retiro)
+        {
+            var loggerMock = new Mock<ILoggerGeneral>();
+            loggerMock.Setup(u => u.LogBalanceDespuesRetiro(It.IsInRange<int>(int.MinValue, -1, Moq.Range.Inclusive))).Returns(false);
+
+            CuentaBancaria cuentaBancaria = new(loggerMock.Object);
+            cuentaBancaria.Deposito(balance);
+
+            var resultado = cuentaBancaria.Retiro(retiro);
+            Assert.IsFalse(resultado);
+        }
     }
 }

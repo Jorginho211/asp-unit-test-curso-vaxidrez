@@ -28,11 +28,12 @@ namespace LibreriaVaxi
         {
             if(monto <= Balance)
             {
+                _loggerGeneral.LogDatabase("Monto de retiro:" + monto.ToString());
                 Balance -= monto;
-                return true;
+                return _loggerGeneral.LogBalanceDespuesRetiro(Balance);
             }
                 
-            return false;
+            return _loggerGeneral.LogBalanceDespuesRetiro(Balance - monto);
         }
         
         public int GetBalance()
