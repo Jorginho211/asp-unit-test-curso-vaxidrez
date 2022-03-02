@@ -8,15 +8,22 @@ namespace LibreriaVaxi
 {
     public interface ILoggerGeneral
     {
+        public int PrioridadLogger { get; set; }
+        public string TipoLogger { get; set; }
+
         void Message(string message);
         bool LogDatabase(string message);
         bool LogBalanceDespuesRetiro(int balanceDespuesRetiro);
         string MessageConReturnStr(string message);
         bool MessageConOutParametroReturnBoolean(string str, out string outputStr);
+        bool MessageConObjetoReferenciaReturnBoolean(ref Cliente cliente);
     }
 
     public class LoggerGeneral : ILoggerGeneral
     {
+        public int PrioridadLogger { get; set; }
+        public string TipoLogger { get; set; }
+
         public bool LogBalanceDespuesRetiro(int balanceDespuesRetiro)
         {
             if(balanceDespuesRetiro >= 0)
@@ -40,6 +47,11 @@ namespace LibreriaVaxi
             Console.WriteLine(message);
         }
 
+        public bool MessageConObjetoReferenciaReturnBoolean(ref Cliente cliente)
+        {
+            return true;
+        }
+
         public bool MessageConOutParametroReturnBoolean(string str, out string outputStr)
         {
             outputStr = "Hola" + str;
@@ -55,6 +67,9 @@ namespace LibreriaVaxi
 
     public class LoggerFake : ILoggerGeneral
     {
+        public int PrioridadLogger { get; set; }
+        public string TipoLogger { get; set; }
+
         public bool LogBalanceDespuesRetiro(int balanceDespuesRetiro)
         {
             return false;
@@ -67,6 +82,11 @@ namespace LibreriaVaxi
 
         public void Message(string message)
         {
+        }
+
+        public bool MessageConObjetoReferenciaReturnBoolean(ref Cliente cliente)
+        {
+            return true;
         }
 
         public bool MessageConOutParametroReturnBoolean(string str, out string outputStr)
