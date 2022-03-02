@@ -104,15 +104,24 @@ namespace LibreriaVaxi
         public void CuentaBancariaLoggerGeneral_LogMockingPropiedadPrioridadTipo_ReturnsTrue()
         {
             var loggerGeneralMock = new Mock<ILoggerGeneral>();
-            loggerGeneralMock.Setup(u => u.TipoLogger).Returns("warning");
-            loggerGeneralMock.Setup(u => u.PrioridadLogger).Returns(10);
-
             // Se queremos setear as propiedades manualmente debese engadir o seguinte se non o seteo e ingorado
             loggerGeneralMock.SetupAllProperties();
-            loggerGeneralMock.Object.PrioridadLogger = 100;
+            loggerGeneralMock.Setup(u => u.TipoLogger).Returns("warning");
+            loggerGeneralMock.Setup(u => u.PrioridadLogger).Returns(10);
+            
+            loggerGeneralMock.Object.PrioridadLogger = 10;
 
             Assert.That(loggerGeneralMock.Object.TipoLogger, Is.EqualTo("warning"));
             Assert.That(loggerGeneralMock.Object.PrioridadLogger, Is.EqualTo(10));
+
+            // CALLBACKS
+            int contador = 5;
+            loggerGeneralMock.Setup(u => u.LogDatabase(It.IsAny<string>()))
+                .Returns(true)
+                .Callback(() => contador++);
+
+            loggerGeneralMock.Object.LogDatabase("drez"); //vaxidrez
+            Assert.That(contador, Is.EqualTo(6));
         }
     }
 }
