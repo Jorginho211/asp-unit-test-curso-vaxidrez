@@ -123,5 +123,24 @@ namespace LibreriaVaxi
             loggerGeneralMock.Object.LogDatabase("drez"); //vaxidrez
             Assert.That(contador, Is.EqualTo(6));
         }
+
+        [Test]
+        public void CuentaBancariaLoggerGeneral_VerifyEjemplo()
+        {
+            var loggerGeneralMock = new Mock<ILoggerGeneral>();
+
+            CuentaBancaria cuentaBancaria = new CuentaBancaria(loggerGeneralMock.Object);
+            cuentaBancaria.Deposito(100);
+            Assert.That(cuentaBancaria.GetBalance, Is.EqualTo(100));
+
+            // verifica cuantas veces el mock esta llamando al metodo .message
+            loggerGeneralMock.Verify(u => u.Message(It.IsAny<string>()), Times.Exactly(3)); // Exactamente 3 veces con calquera string
+
+            loggerGeneralMock.Verify(u => u.Message("visita vaxidrez.com"), Times.AtLeastOnce); // Ao menos unha vez con ese parametro
+
+            // Setear co valor e obter o valor unha soa vez
+            loggerGeneralMock.VerifySet(u => u.PrioridadLogger = 100, Times.Once);
+            loggerGeneralMock.VerifyGet(u => u.PrioridadLogger, Times.Once);
+        }
     }
 }
