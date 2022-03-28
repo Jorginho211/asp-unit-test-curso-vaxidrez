@@ -1,83 +1,71 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Xunit;
 
 namespace LibreriaVaxi
 {
-    [TestFixture]
     public class ClienteXUnitTest
     {
         private Cliente cliente;
 
-        [SetUp]
-        public void Setup()
+        public ClienteXUnitTest()
         {
             cliente = new Cliente();
         }
 
-        [Test]
+        [Fact]
         public void CrearNombreCompleto_InputNombreApellido_ReturnNombreCompleto()
         {
             cliente.CrearNombreCompleto("Vaxi", "Drez");
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(cliente.ClienteNombre, Is.EqualTo("Vaxi Drez"));
-                Assert.AreEqual(cliente.ClienteNombre, "Vaxi Drez");
-                Assert.That(cliente.ClienteNombre, Does.Contain("Drez"));
-                Assert.That(cliente.ClienteNombre, Does.Contain("drez").IgnoreCase);
-                Assert.That(cliente.ClienteNombre, Does.StartWith("Vaxi"));
-                Assert.That(cliente.ClienteNombre, Does.EndWith("Drez"));
-            });
+            Assert.Equal("Vaxi Drez", cliente.ClienteNombre);
+            Assert.Contains("Drez", cliente.ClienteNombre);
+            Assert.StartsWith("Vaxi", cliente.ClienteNombre);
+            Assert.EndsWith("Drez", cliente.ClienteNombre);
         }
 
-        [Test]
+        [Fact]
         public void ClienteNombre_NoValues_ReturnNull()
         {
-            Assert.IsNull(cliente.ClienteNombre);
+            Assert.Null(cliente.ClienteNombre);
         }
 
-        [Test]
+        [Fact]
         public void DescuentoEvaluacion_DefaultClient_ReturnsDescuentoIntervalo()
         {
             int descuento = cliente.Descuento;
-            Assert.That(descuento, Is.InRange(5, 24));
+            Assert.InRange(descuento, 5, 24);
         }
 
-        [Test]
+        [Fact]
         public void CrearNombreCompleto_InputNombre_ReturnNotNull()
         {
             cliente.CrearNombreCompleto("Vaxi", "");
 
-            Assert.IsNotNull(cliente.ClienteNombre);
-            Assert.IsFalse(string.IsNullOrEmpty(cliente.ClienteNombre));
+            Assert.NotNull(cliente.ClienteNombre);
+            Assert.False(string.IsNullOrEmpty(cliente.ClienteNombre));
         }
 
-        [Test]
+        [Fact]
         public void CrearNombreCompleto_InputNombreEnBlanco_ThrowsException()
         {
             var exceptionDetalle = Assert.Throws<ArgumentException>(() => cliente.CrearNombreCompleto("", "Drez"));
-            Assert.AreEqual("El nombre esta en blanco", exceptionDetalle.Message);
-            Assert.That(() => cliente.CrearNombreCompleto("", "Drez"), Throws.ArgumentException);
+            Assert.Equal("El nombre esta en blanco", exceptionDetalle.Message);
+            Assert.Throws<ArgumentException>(() => cliente.CrearNombreCompleto("", "Drez"));
         }
 
-        [Test]
+        [Fact]
         public void GetClienteDetalle_CrearClienteConMenos500OrderTotal_ReturnsClienteBasico()
         {
             cliente.OrderTotal = 150;
             TipoCliente tipoCliente = cliente.GetClienteDetalle();
-            Assert.That(tipoCliente, Is.TypeOf<ClienteBasico>());
+            Assert.IsType<ClienteBasico>(tipoCliente);
         }
 
-        [Test]
+        [Fact]
         public void GetClienteDetalle_CrearClienteConMas500OrderTotal_ReturnsClienteBasico()
         {
             cliente.OrderTotal = 500;
             TipoCliente tipoCliente = cliente.GetClienteDetalle();
-            Assert.That(tipoCliente, Is.TypeOf<ClientePremium>());
+            Assert.IsType<ClientePremium>(tipoCliente);
         }
     }
 }

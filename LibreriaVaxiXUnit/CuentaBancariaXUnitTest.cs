@@ -1,39 +1,33 @@
 ﻿using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Xunit;
 
 namespace LibreriaVaxi
 {
-    [TestFixture]
     public class CuentaBancariaXUnitTest
     {
-        [Test]
+        [Fact]
         public void Deposto_InputMonto100_ReturnsTrue()
         {
             CuentaBancaria cuentaBancaria = new CuentaBancaria(new LoggerFake());
             var resultado = cuentaBancaria.Deposito(100);
-            Assert.IsTrue(resultado);
-            Assert.That(cuentaBancaria.GetBalance(), Is.EqualTo(100));
+            Assert.True(resultado);
+            Assert.Equal(100, cuentaBancaria.GetBalance());
         }
 
-        [Test]
+        [Fact]
         public void Deposto_InputMonto100Mocking_ReturnsTrue()
         {
             var mocking = new Mock<ILoggerGeneral>();
 
             CuentaBancaria cuentaBancaria = new CuentaBancaria(mocking.Object);
             var resultado = cuentaBancaria.Deposito(100);
-            Assert.IsTrue(resultado);
-            Assert.That(cuentaBancaria.GetBalance(), Is.EqualTo(100));
+            Assert.True(resultado);
+            Assert.Equal(100, cuentaBancaria.GetBalance());
         }
 
-        [Test]
-        [TestCase(200, 100)]
-        [TestCase(200, 150)]
+        [Theory]
+        [InlineData(200, 100)]
+        [InlineData(200, 150)]
         public void Retiro_RetiroInferiorBalance_ReturnsTrue(int balance, int retiro)
         {
             var loggerMock = new Mock<ILoggerGeneral>();
@@ -44,11 +38,11 @@ namespace LibreriaVaxi
             cuentaBancaria.Deposito(balance);
 
             var resultado = cuentaBancaria.Retiro(retiro);
-            Assert.IsTrue(resultado);
+            Assert.True(resultado);
         }
 
-        [Test]
-        [TestCase(200, 300)]
+        [Theory]
+        [InlineData(200, 300)]
         public void Retiro_RetiroSuperiorBalance_ReturnsFalse(int balance, int retiro)
         {
             var loggerMock = new Mock<ILoggerGeneral>();
@@ -58,10 +52,10 @@ namespace LibreriaVaxi
             cuentaBancaria.Deposito(balance);
 
             var resultado = cuentaBancaria.Retiro(retiro);
-            Assert.IsFalse(resultado);
+            Assert.False(resultado);
         }
 
-        [Test]
+        [Fact]
         public void CuentaBancariaLoggerGeneral_LogMocking_ReturnTrue()
         {
             var loggerGeneralMock = new Mock<ILoggerGeneral>();
@@ -70,10 +64,10 @@ namespace LibreriaVaxi
 
             var resultado = loggerGeneralMock.Object.MessageConReturnStr("hoLA MUndo");
 
-            Assert.That(resultado, Is.EqualTo(textoPrueba));
+            Assert.Equal(textoPrueba, resultado);
         }
 
-        [Test]
+        [Fact]
         public void CuentaBancariaLoggerGeneral_LogMockingOutPut_ReturnTrue()
         {
             var loggerGeneralMock = new Mock<ILoggerGeneral>();
@@ -84,10 +78,10 @@ namespace LibreriaVaxi
             string parametroOut = string.Empty;
             var resultado = loggerGeneralMock.Object.MessageConOutParametroReturnBoolean("Vaxi", out parametroOut);
 
-            Assert.IsTrue(resultado);
+            Assert.True(resultado);
         }
 
-        [Test]
+        [Fact]
         public void CuentaBancariaLoggerGeneral_LogMockingObjetoRef_ReturnRef()
         {
             var loggerGeneralMock = new Mock<ILoggerGeneral>();
@@ -96,11 +90,11 @@ namespace LibreriaVaxi
 
             loggerGeneralMock.Setup(u => u.MessageConObjetoReferenciaReturnBoolean(ref cliente)).Returns(true);
 
-            Assert.IsTrue(loggerGeneralMock.Object.MessageConObjetoReferenciaReturnBoolean(ref cliente));
-            Assert.IsFalse(loggerGeneralMock.Object.MessageConObjetoReferenciaReturnBoolean(ref clienteNoUsado));
+            Assert.True(loggerGeneralMock.Object.MessageConObjetoReferenciaReturnBoolean(ref cliente));
+            Assert.False(loggerGeneralMock.Object.MessageConObjetoReferenciaReturnBoolean(ref clienteNoUsado));
         }
 
-        [Test]
+        [Fact]
         public void CuentaBancariaLoggerGeneral_LogMockingPropiedadPrioridadTipo_ReturnsTrue()
         {
             var loggerGeneralMock = new Mock<ILoggerGeneral>();
@@ -111,8 +105,8 @@ namespace LibreriaVaxi
             
             loggerGeneralMock.Object.PrioridadLogger = 10;
 
-            Assert.That(loggerGeneralMock.Object.TipoLogger, Is.EqualTo("warning"));
-            Assert.That(loggerGeneralMock.Object.PrioridadLogger, Is.EqualTo(10));
+            Assert.Equal("warning", loggerGeneralMock.Object.TipoLogger);
+            Assert.Equal(10, loggerGeneralMock.Object.PrioridadLogger);
 
             // CALLBACKS
             int contador = 5;
@@ -121,17 +115,17 @@ namespace LibreriaVaxi
                 .Callback(() => contador++);
 
             loggerGeneralMock.Object.LogDatabase("drez"); //vaxidrez
-            Assert.That(contador, Is.EqualTo(6));
+            Assert.Equal(6, contador);
         }
 
-        [Test]
+        [Fact]
         public void CuentaBancariaLoggerGeneral_VerifyEjemplo()
         {
             var loggerGeneralMock = new Mock<ILoggerGeneral>();
 
             CuentaBancaria cuentaBancaria = new CuentaBancaria(loggerGeneralMock.Object);
             cuentaBancaria.Deposito(100);
-            Assert.That(cuentaBancaria.GetBalance, Is.EqualTo(100));
+            Assert.Equal(100, cuentaBancaria.GetBalance());
 
             // verifica cuantas veces el mock esta llamando al metodo .message
             loggerGeneralMock.Verify(u => u.Message(It.IsAny<string>()), Times.Exactly(3)); // Exactamente 3 veces con calquera string
